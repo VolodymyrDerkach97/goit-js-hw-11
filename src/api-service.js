@@ -16,23 +16,25 @@ export class APIService {
       image_type: 'photo',
       orientation: 'horizontal',
       safesearch: true,
-      per_page: 85,
+      per_page: 40,
       page: this.page,
     });
 
     try {
-      const colections = await axios.get(`${BASE_URL}?${serchParamets}`);
-      this.getTotalElements();
-      return colections;
+      const { data } = await axios.get(`${BASE_URL}?${serchParamets}`);
+      this.setTotalElements();
+      return data;
     } catch (error) {
       error.message;
     }
   }
+
   resetTotalElements() {
     this.totalElements = 0;
   }
-  getTotalElements() {
-    this.totalElements += 85;
+
+  setTotalElements() {
+    this.totalElements += 40;
   }
 
   incrementPage() {
