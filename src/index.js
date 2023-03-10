@@ -58,7 +58,6 @@ async function onSubmitSerchForm(e) {
       renderGalleryImageCards(data.hits);
       apiService.incrementPage();
 
-      galleryLightbox.refresh();
       Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
 
       btnLoadMore.classList.remove('visually-hidden');
@@ -115,6 +114,7 @@ function renderGalleryImageCards(arrImagesCards) {
     .join('');
 
   gallery.insertAdjacentHTML('beforeend', markup);
+  galleryLightbox.refresh();
 }
 
 function scroll() {
@@ -126,6 +126,7 @@ function scroll() {
     top: cardHeight * 2,
     behavior: 'smooth',
   });
+  console.log('scroll');
 }
 
 window.addEventListener(
