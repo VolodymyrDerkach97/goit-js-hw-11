@@ -1,5 +1,7 @@
 import { APIService } from './api-service';
 import Notiflix from 'notiflix';
+
+const throttle = require('lodash.throttle');
 // Описаний в документації
 import SimpleLightbox from 'simplelightbox';
 // Додатковий імпорт стилів
@@ -10,6 +12,8 @@ const apiService = new APIService();
 const form = document.querySelector('#search-form');
 const gallery = document.querySelector('.gallery');
 const btnLoadMore = document.querySelector('.load-more');
+
+let isLoading = false;
 
 const galleryLightbox = new SimpleLightbox('.gallery a', {
   docClose: true,
@@ -25,7 +29,7 @@ const galleryLightbox = new SimpleLightbox('.gallery a', {
 });
 
 form.addEventListener('submit', onSubmitSerchForm);
-btnLoadMore.addEventListener('click', onLoadMoreBtn);
+btnLoadMore.addEventListener('click', onLoadMore);
 form.addEventListener(
   'input',
   e => (apiService.query = e.currentTarget.elements.searchQuery.value)
@@ -69,7 +73,7 @@ async function onSubmitSerchForm(e) {
   }
 }
 
-async function onLoadMoreBtn() {
+async function onLoadMore() {
   try {
     const data = await apiService.getImages(apiService.searchQuery);
     renderGalleryImageCards(data.hits);
@@ -95,16 +99,16 @@ function renderGalleryImageCards(arrImagesCards) {
         <img src="${imagesCard.webformatURL}" alt="${imagesCard.tags}" loading="lazy" width='300' height='200'/>
         <div class="info">
           <p class="info-item">
-            <b>Likes: ${imagesCard.likes}</b>
+            <b>Likes: <br>${imagesCard.likes}</b>
           </p>
           <p class="info-item">
-            <b>Views: ${imagesCard.views}</b>
+            <b>Views: <br>${imagesCard.views}</b>
           </p>
           <p class="info-item">
-            <b>Comments: ${imagesCard.comments}</b>
+            <b>Comments: <br>${imagesCard.comments}</b>
           </p>
           <p class="info-item">
-            <b>Downloads: ${imagesCard.downloads}</b>
+            <b>Downloads: <br>${imagesCard.downloads}</b>
           </p>
         </div>
       </div></a>`
@@ -125,4 +129,35 @@ function scroll() {
   });
 }
 
-gallery.addEventListener('scroll', e => console.log(e));
+window.addEventListener(
+  'scroll',
+  throttle(() => {
+    if (isLoading) return;
+    const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+
+    const scrollPositin = scrollHeight - scrollTop;
+    if (clientHeight >= scrollPositin - 500) {
+      onInfinityScrion();
+    }
+  }, 300)
+);
+
+async function onInfinityScrion() {
+  isLoading = true;
+  try {
+    const data = await apiService.getImages(apiService.searchQuery);
+    renderGalleryImageCards(data.hits);
+    apiService.incrementPage();
+
+    if (apiService.totalElements >= data.totalHits) {
+      Notiflix.Notify.failure(
+        "We're sorry, but you've reached the end of search results."
+      );
+      btnLoadMore.classList.add('visually-hidden');
+    }
+  } catch (error) {
+    error.message;
+  } finally {
+    isLoading = false;
+  }
+}

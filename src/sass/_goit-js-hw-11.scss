@@ -1,10 +1,22 @@
 body {
     text-align: center;
+    font-weight: 300;
 }
 
 a {
     text-decoration: none;
+    color: black;
+    box-shadow: 7px 9px 15px -6px black
+    
+    
 }
+
+input {
+height: 40px;
+border-radius: 10px;
+
+}
+
 .visually-hidden {
     position: absolute;
     white-space: nowrap;
@@ -21,15 +33,36 @@ a {
 .search-form{
     display: flex;
     justify-content: center;
-}
+    align-items: center;
+    height: 50px;
+    background-color: rgb(75, 107, 168);}
+
 
 .gallery {
-display: flex;
-justify-content: center;
-flex-wrap: wrap;
-gap: 15px
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+
+    margin-bottom: 10px;
 }
 
-.load-more {
- 
+.info {
+    display: flex;
+    gap: 10px
 }
+
+.btn {
+    height: 40px;
+    border: 2px solid ;
+    border-radius: 20px;
+    background-color: rgb(88, 4, 185);
+    color: white;
+   box-shadow:  7px 9px 15px -6px black
+}
+
+
+.btn:hover {
+    background-color: rgb(138, 36, 255); ;
+}
+
