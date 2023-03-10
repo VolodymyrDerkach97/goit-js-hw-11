@@ -53,7 +53,6 @@ async function onSubmitSerchForm(e) {
 
   try {
     const data = await apiService.getImages(apiService.searchQuery);
-    console.log(data);
 
     if (!(data.total === 0)) {
       renderGalleryImageCards(data.hits);
