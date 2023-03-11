@@ -14,6 +14,7 @@ const gallery = document.querySelector('.gallery');
 const btnLoadMore = document.querySelector('.load-more');
 
 let isLoading = false;
+let isEnd = false;
 
 const galleryLightbox = new SimpleLightbox('.gallery a', {
   docClose: true,
@@ -54,13 +55,17 @@ async function onSubmitSerchForm(e) {
   try {
     const data = await apiService.getImages(apiService.searchQuery);
 
-    if (!(data.total === 0)) {
+    if (!(apiService.totalElements >= data.totalHits)) {
+      btnLoadMore.classList.remove('visually-hidden');
+    } else {
+      btnLoadMore.classList.add('visually-hidden');
+    }
+
+    if (data.total !== 0) {
       renderGalleryImageCards(data.hits);
       apiService.incrementPage();
 
       Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
-
-      btnLoadMore.classList.remove('visually-hidden');
     } else {
       Notiflix.Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.'
@@ -133,6 +138,7 @@ window.addEventListener(
   'scroll',
   throttle(() => {
     if (isLoading) return;
+    if (isEnd) return;
     const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
 
     const scrollPositin = scrollHeight - scrollTop;
@@ -154,6 +160,9 @@ async function onInfinityScrion() {
         "We're sorry, but you've reached the end of search results."
       );
       btnLoadMore.classList.add('visually-hidden');
+      isEnd = true;
+    } else {
+      isEnd = false;
     }
   } catch (error) {
     error.message;
