@@ -5,8 +5,8 @@ const throttle = require('lodash.throttle');
 // Описаний в документації
 import SimpleLightbox from 'simplelightbox';
 // Додатковий імпорт стилів
-import 'simplelightbox/dist/simple-lightbox.min.css';
 
+import 'simplelightbox/dist/simple-lightbox.min.css';
 const apiService = new APIService();
 
 const form = document.querySelector('#search-form');
